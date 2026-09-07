@@ -1,8 +1,7 @@
 import sys
-from config import HARDWARE_MACHINES
-from models.model_list import ALL_MODELS
-from runner.benchmark_runner import BenchmarkRunner
-
+from config.hardware import HARDWARE_MACHINES
+from config.models import ALL_MODELS
+from core.runner import BenchmarkRunner
 
 def select_hardware() -> str:
     print("\nSelect Hardware Machine Identifier:")
@@ -13,9 +12,8 @@ def select_hardware() -> str:
         choice = input("Enter choice (1-4): ").strip()
         if choice in HARDWARE_MACHINES:
             return HARDWARE_MACHINES[choice]
-        print("Invalid selection. Please choose a valid hardware option.")
-
-
+        print("Invalid selection.")
+ 
 def select_model() -> str:
     print("\nSelect LLM Model to Benchmark:")
     model_mapping = {}
@@ -32,8 +30,7 @@ def select_model() -> str:
         choice = input(f"\nEnter choice (1-{counter - 1}): ").strip()
         if choice in model_mapping:
             return model_mapping[choice]
-        print("Invalid model selection. Please pick a number from the list.")
-
+        print("Invalid model selection.")
 
 def main():
     print("==================================================")
@@ -48,7 +45,6 @@ def main():
     except KeyboardInterrupt:
         print("\n\n[-] Benchmark interrupted by user. Exiting gracefully.")
         sys.exit(0)
-
 
 if __name__ == "__main__":
     main()
