@@ -1,0 +1,2 @@
+[console_scripts]
+benchmark-llm = main:main
