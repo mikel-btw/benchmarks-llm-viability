@@ -1,10 +1,22 @@
 import sys
+import ollama
 from config.hardware import HARDWARE_MACHINES
 from config.models import ALL_MODELS
 from core.runner import BenchmarkRunner
 
+def check_ollama_status():
+    print("Checking Ollama connection...")
+    try:
+        ollama.list()
+        print("[+] Ollama server is active.\n")
+    except Exception:
+        print("\n[-] Error: Could not connect to Ollama.")
+        print("    Please ensure the daemon is running in another terminal:")
+        print("    $ ollama serve")
+        sys.exit(1)
+
 def select_hardware() -> str:
-    print("\nSelect Hardware Machine Identifier:")
+    print("Select Hardware Machine Identifier:")
     for key, name in HARDWARE_MACHINES.items():
         print(f"  [{key}] {name}")
     
@@ -13,7 +25,7 @@ def select_hardware() -> str:
         if choice in HARDWARE_MACHINES:
             return HARDWARE_MACHINES[choice]
         print("Invalid selection.")
- 
+
 def select_model() -> str:
     print("\nSelect LLM Model to Benchmark:")
     model_mapping = {}
@@ -35,7 +47,9 @@ def select_model() -> str:
 def main():
     print("==================================================")
     print("      Ollama Academic Benchmark Suite (Local)     ")
-    print("==================================================")
+    print("==================================================\n")
+
+    check_ollama_status()
 
     try:
         hardware = select_hardware()

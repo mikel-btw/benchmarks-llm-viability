@@ -1,7 +1,6 @@
 annotated-types>=0.7.0
 anyio>=4.0.0
 certifi
-deepeval>=3.0.0
 h11>=0.14.0
 httpcore>=1.0.0
 httpx>=0.27.0
