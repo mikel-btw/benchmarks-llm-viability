@@ -2,7 +2,7 @@ Metadata-Version: 2.4
 Name: benchmark-llm-viability
 Version: 0.1.0
 Summary: Empirical benchmarking of local LLMs across heterogeneous hardware
-Requires-Python: <3.14,>=3.10
+Requires-Python: >=3.10
 Description-Content-Type: text/markdown
 License-File: LICENSE.md
 Requires-Dist: annotated-types>=0.7.0
