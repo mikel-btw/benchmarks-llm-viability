@@ -1,11 +1,24 @@
+from deepeval.benchmarks import GSM8K
+from .deepeval_llm import OllamaDeepEvalLLM
+
 class GSM8KBenchmark:
     name = "GSM8K"
 
-    def get_prompts(self) -> list[str]:
-        return [
-            "If I have 5 apples and buy 3 more, how many apples do I have in total?",
-            "A train travels at 60 km/h for 2.5 hours. What distance does it cover?",
-            "If 3 shirts cost $45, how much do 5 shirts cost?",
-            "A rectangle has length 8 cm and width 5 cm. What is its area?",
-            "If I have 12 cookies and give 1/3 away, how many do I have left?",
-        ]
+    def run(self, model: str, hardware: str) -> dict:
+        llm = OllamaDeepEvalLLM(model=model)
+        benchmark = GSM8K(n_shots=0)
+        
+        if hasattr(benchmark, 'golden_set') and len(benchmark.golden_set) > 20:
+            benchmark.golden_set = benchmark.golden_set[:20]
+        if hasattr(benchmark, 'dataset') and len(benchmark.dataset) > 20:
+            benchmark.dataset = benchmark.dataset[:20]
+
+        benchmark.evaluate(model=llm)
+        
+        return {
+            "benchmark": self.name,
+            "model": model,
+            "hardware": hardware,
+            "score": getattr(benchmark, 'overall_score', 0.0),
+            "details": [{"query": getattr(pred, 'input', ''), "correct": getattr(pred, 'success', False)} for pred in getattr(benchmark, 'predictions', [])]
+        }
