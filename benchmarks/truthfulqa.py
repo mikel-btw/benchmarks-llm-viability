@@ -16,8 +16,8 @@ class TruthfulQABenchmark:
                 if res is None:
                     return res
                 if hasattr(res, 'select'):
-                    return res.select(range(min(20, len(res))))
-                return res[:20]
+                    return res.select(range(min(10, len(res))))
+                return res[:10]
             benchmark.load_benchmark_dataset = limited_load
 
         benchmark.evaluate(model=llm)

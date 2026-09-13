@@ -10,7 +10,7 @@ class ARCChallengeBenchmark:
         try:
             from deepeval.benchmarks.modes import ARCMode
             try:
-                benchmark = ARC(n_shots=0, n_problems=20, mode=ARCMode.CHALLENGE)
+                benchmark = ARC(n_shots=0, n_problems=10, mode=ARCMode.CHALLENGE)
             except TypeError:
                 benchmark = ARC(n_shots=0, mode=ARCMode.CHALLENGE)
         except ImportError:
@@ -24,8 +24,8 @@ class ARCChallengeBenchmark:
                 if res is None:
                     return res
                 if hasattr(res, 'select'):
-                    return res.select(range(min(20, len(res))))
-                return res[:20]
+                    return res.select(range(min(10, len(res))))
+                return res[:10]
             benchmark.load_benchmark_dataset = limited_load
 
         benchmark.evaluate(model=llm)

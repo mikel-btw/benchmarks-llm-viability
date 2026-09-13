@@ -8,7 +8,7 @@ class GSM8KBenchmark:
         llm = OllamaDeepEvalLLM(model=model)
         
         try:
-            benchmark = GSM8K(n_shots=0, n_problems=20)
+            benchmark = GSM8K(n_shots=0, n_problems=10)
         except TypeError:
             benchmark = GSM8K(n_shots=0)
         
@@ -19,8 +19,8 @@ class GSM8KBenchmark:
                 if res is None:
                     return res
                 if hasattr(res, 'select'):
-                    return res.select(range(min(20, len(res))))
-                return res[:20]
+                    return res.select(range(min(10, len(res))))
+                return res[:10]
             benchmark.load_benchmark_dataset = limited_load
 
         benchmark.evaluate(model=llm)
