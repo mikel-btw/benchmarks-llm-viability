@@ -8,11 +8,17 @@ class MMLUBenchmark:
         llm = OllamaDeepEvalLLM(model=model)
         benchmark = MMLU(n_shots=0)
         
-        # Enforce the 20-question limit
-        if hasattr(benchmark, 'golden_set') and len(benchmark.golden_set) > 20:
-            benchmark.golden_set = benchmark.golden_set[:20]
-        if hasattr(benchmark, 'dataset') and len(benchmark.dataset) > 20:
-            benchmark.dataset = benchmark.dataset[:20]
+        # Monkey-patch dataset loader to enforce 20-question limit
+        original_load = getattr(benchmark, 'load_benchmark_dataset', None)
+        if original_load and callable(original_load):
+            def limited_load(*args, **kwargs):
+                res = original_load(*args, **kwargs)
+                if res is None:
+                    return res
+                if hasattr(res, 'select'): # Support for HuggingFace Datasets
+                    return res.select(range(min(20, len(res))))
+                return res[:20] # Support for standard lists
+            benchmark.load_benchmark_dataset = limited_load
 
         benchmark.evaluate(model=llm)
         

@@ -6,12 +6,19 @@ class TruthfulQABenchmark:
 
     def run(self, model: str, hardware: str) -> dict:
         llm = OllamaDeepEvalLLM(model=model)
-        benchmark = TruthfulQA(n_shots=0)
+        # TruthfulQA does not accept n_shots
+        benchmark = TruthfulQA()
         
-        if hasattr(benchmark, 'golden_set') and len(benchmark.golden_set) > 20:
-            benchmark.golden_set = benchmark.golden_set[:20]
-        if hasattr(benchmark, 'dataset') and len(benchmark.dataset) > 20:
-            benchmark.dataset = benchmark.dataset[:20]
+        original_load = getattr(benchmark, 'load_benchmark_dataset', None)
+        if original_load and callable(original_load):
+            def limited_load(*args, **kwargs):
+                res = original_load(*args, **kwargs)
+                if res is None:
+                    return res
+                if hasattr(res, 'select'):
+                    return res.select(range(min(20, len(res))))
+                return res[:20]
+            benchmark.load_benchmark_dataset = limited_load
 
         benchmark.evaluate(model=llm)
         
