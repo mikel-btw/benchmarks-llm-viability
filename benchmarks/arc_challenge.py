@@ -1,4 +1,5 @@
 from deepeval.benchmarks import ARC
+from deepeval.benchmarks.modes import ARCMode
 from .deepeval_llm import OllamaDeepEvalLLM
 
 class ARCChallengeBenchmark:
@@ -8,14 +9,9 @@ class ARCChallengeBenchmark:
         llm = OllamaDeepEvalLLM(model=model)
         
         try:
-            from deepeval.benchmarks.modes import ARCMode
-            try:
-                benchmark = ARC(n_shots=0, n_problems=10, mode=ARCMode.CHALLENGE)
-            except TypeError:
-                benchmark = ARC(n_shots=0, mode=ARCMode.CHALLENGE)
-        except ImportError:
-            # Fallback if ARCMode cannot be imported
-            benchmark = ARC(n_shots=0)
+            benchmark = ARC(n_shots=0, n_problems=10, mode=ARCMode.CHALLENGE)
+        except TypeError:
+            benchmark = ARC(n_shots=0, n_problems=10)
             
         benchmark.evaluate(model=llm)
         

@@ -6,7 +6,7 @@ class MMLUBenchmark:
 
     def run(self, model: str, hardware: str) -> dict:
         llm = OllamaDeepEvalLLM(model=model)
-        benchmark = MMLU(n_shots=0)
+        benchmark = MMLU(n_shots=0, n_problems=10)
         
         benchmark.evaluate(model=llm)
         

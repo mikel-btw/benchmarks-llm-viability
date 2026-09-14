@@ -6,11 +6,7 @@ class GSM8KBenchmark:
 
     def run(self, model: str, hardware: str) -> dict:
         llm = OllamaDeepEvalLLM(model=model)
-        
-        try:
-            benchmark = GSM8K(n_shots=0, n_problems=10)
-        except TypeError:
-            benchmark = GSM8K(n_shots=0)
+        benchmark = GSM8K(n_shots=0, n_problems=10)
         
         benchmark.evaluate(model=llm)
         

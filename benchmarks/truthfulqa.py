@@ -6,8 +6,7 @@ class TruthfulQABenchmark:
 
     def run(self, model: str, hardware: str) -> dict:
         llm = OllamaDeepEvalLLM(model=model)
-        # TruthfulQA does not accept n_shots
-        benchmark = TruthfulQA()
+        benchmark = TruthfulQA(n_problems=10)
         
         benchmark.evaluate(model=llm)
         

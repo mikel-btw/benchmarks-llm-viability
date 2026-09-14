@@ -25,7 +25,7 @@ class BenchmarkRunner:
             if choice in [str(i) for i in range(1, 8)]:
                 choice = int(choice)
                 break
-            print("Invalid selection.")
+            print("Invalid selection. Please enter a number between 1 and 7.")
 
         results: List[Dict[str, Any]] = []
 
@@ -34,7 +34,7 @@ class BenchmarkRunner:
         deepeval_targets = []
         manual_targets = []
 
-        # Route the selected option to the appropriate execution queue
+        # Map user choice to the execution targets
         if 1 <= choice <= 5:
             deepeval_targets.append(DEEPEVAL_BENCHMARKS[choice - 1]())
         elif choice == 6:
