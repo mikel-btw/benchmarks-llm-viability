@@ -14,7 +14,7 @@ class OllamaDeepEvalLLM(DeepEvalBaseLLM):
             model=self.model_name,
             messages=[{"role": "user", "content": prompt}]
         )
-        return response.get("message", {}).get("content", "")
+        return response.message.content
 
     async def a_generate(self, prompt: str) -> str:
         client = ollama.AsyncClient()
@@ -22,7 +22,7 @@ class OllamaDeepEvalLLM(DeepEvalBaseLLM):
             model=self.model_name,
             messages=[{"role": "user", "content": prompt}]
         )
-        return response.get("message", {}).get("content", "")
+        return response.message.content
 
     def get_model_name(self) -> str:
         return self.model_name

@@ -9,17 +9,6 @@ class TruthfulQABenchmark:
         # TruthfulQA does not accept n_shots
         benchmark = TruthfulQA()
         
-        original_load = getattr(benchmark, 'load_benchmark_dataset', None)
-        if original_load and callable(original_load):
-            def limited_load(*args, **kwargs):
-                res = original_load(*args, **kwargs)
-                if res is None:
-                    return res
-                if hasattr(res, 'select'):
-                    return res.select(range(min(10, len(res))))
-                return res[:10]
-            benchmark.load_benchmark_dataset = limited_load
-
         benchmark.evaluate(model=llm)
         
         return {

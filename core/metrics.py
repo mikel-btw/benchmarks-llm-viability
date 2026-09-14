@@ -22,11 +22,11 @@ class InferenceMetrics:
             if first_token_time is None:
                 first_token_time = time.perf_counter()
             
-            content = chunk.get("message", {}).get("content", "")
+            content = chunk.message.content if hasattr(chunk, 'message') else ""
             full_response += content
 
-            if "eval_count" in chunk and chunk["eval_count"]:
-                eval_count = chunk["eval_count"]
+            if hasattr(chunk, 'eval_count') and chunk.eval_count:
+                eval_count = chunk.eval_count
 
         end_time = time.perf_counter()
         ram_used_mb = int(process.memory_info().rss / (1024 * 1024))
