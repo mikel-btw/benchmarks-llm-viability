@@ -1,8 +1,17 @@
 import unittest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from core.metrics import InferenceMetrics
 from benchmarks import DEEPEVAL_BENCHMARKS, MANUAL_BENCHMARKS
 from benchmarks.deepeval_llm import OllamaDeepEvalLLM
+
+class MockMessage:
+    def __init__(self, content):
+        self.content = content
+
+class MockChunk:
+    def __init__(self, content, eval_count=None):
+        self.message = MockMessage(content)
+        self.eval_count = eval_count
 
 class TestBenchmarkSuite(unittest.TestCase):
     
@@ -23,10 +32,10 @@ class TestBenchmarkSuite(unittest.TestCase):
     @patch("ollama.chat")
     def test_metrics_measure_stream(self, mock_chat):
         """Test inference metric capture and timing structures for manual mode."""
-        # Mock the generator stream returned by ollama.chat(stream=True)
+        # Mock the generator stream returned by ollama.chat(stream=True) using object attributes
         mock_chat.return_value = iter([
-            {"message": {"content": "Hola"}},
-            {"message": {"content": " mundo!"}, "eval_count": 2},
+            MockChunk("Hola"),
+            MockChunk(" mundo!", eval_count=2),
         ])
         
         metrics = InferenceMetrics.measure_stream_response("llama3.2:1b", "Test prompt")
@@ -40,8 +49,8 @@ class TestBenchmarkSuite(unittest.TestCase):
     @patch("ollama.chat")
     def test_deepeval_llm_wrapper(self, mock_chat):
         """Test the DeepEval wrapper properly routes calls to Ollama."""
-        # Mock a standard (non-streamed) response from Ollama
-        mock_chat.return_value = {"message": {"content": "Respuesta simulada para DeepEval"}}
+        # Mock a standard (non-streamed) response from Ollama using object attributes
+        mock_chat.return_value = MockChunk("Respuesta simulada para DeepEval")
         
         llm = OllamaDeepEvalLLM(model="llama3.2:1b")
         response = llm.generate("Test prompt")
