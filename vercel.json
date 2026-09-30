@@ -1,5 +1,13 @@
 {
+  "builds": [
+    {
+      "src": "pyproject.toml",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "site"
+      }
+    }
+  ],
   "buildCommand": "pip install . && mkdocs build",
-  "outputDirectory": "site",
-  "installCommand": ""
+  "outputDirectory": "site"
 }
