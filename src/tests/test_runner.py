@@ -24,7 +24,7 @@ class TestBenchmarkSuite(unittest.TestCase):
 
     def test_deepeval_benchmarks_structure(self):
         """Verify DeepEval benchmarks are correctly loaded and expose the run method."""
-        self.assertEqual(len(DEEPEVAL_BENCHMARKS), 5, "There should be exactly 5 DeepEval benchmarks")
+        self.assertEqual(len(DEEPEVAL_BENCHMARKS), 3, "There should be exactly 3 DeepEval benchmarks")
         for BenchmarkClass in DEEPEVAL_BENCHMARKS:
             instance = BenchmarkClass()
             self.assertTrue(hasattr(instance, 'run'), f"{instance.name} is missing the 'run' method")

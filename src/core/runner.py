@@ -13,19 +13,17 @@ class BenchmarkRunner:
     def run(self) -> List[Dict[str, Any]]:
         print("\nSelect benchmark to run:")
         print("  [1] MMLU (DeepEval)")
-        print("  [2] GSM8K (DeepEval)")
-        print("  [3] HellaSwag (DeepEval)")
-        print("  [4] TruthfulQA (DeepEval)")
-        print("  [5] ARC Challenge (DeepEval)")
-        print("  [6] Prompt Qualification (Manual scoring)")
-        print("  [7] Run all")
+        print("  [2] HellaSwag (DeepEval)")
+        print("  [3] TruthfulQA (DeepEval)")
+        print("  [4] Prompt Qualification (Manual scoring)")
+        print("  [5] Run all")
         
         while True:
-            choice = input("Enter choice (1-7): ").strip()
-            if choice in [str(i) for i in range(1, 8)]:
+            choice = input("Enter choice (1-5): ").strip()
+            if choice in [str(i) for i in range(1, 6)]:
                 choice = int(choice)
                 break
-            print("Invalid selection. Please enter a number between 1 and 7.")
+            print("Invalid selection. Please enter a number between 1 and 5.")
 
         results: List[Dict[str, Any]] = []
 
@@ -35,11 +33,11 @@ class BenchmarkRunner:
         manual_targets = []
 
         # Map user choice to the execution targets
-        if 1 <= choice <= 5:
+        if 1 <= choice <= len(DEEPEVAL_BENCHMARKS):
             deepeval_targets.append(DEEPEVAL_BENCHMARKS[choice - 1]())
-        elif choice == 6:
+        elif choice == len(DEEPEVAL_BENCHMARKS) + 1:
             manual_targets = MANUAL_BENCHMARKS
-        elif choice == 7:
+        else:
             deepeval_targets = [B() for B in DEEPEVAL_BENCHMARKS]
             manual_targets = MANUAL_BENCHMARKS
 
