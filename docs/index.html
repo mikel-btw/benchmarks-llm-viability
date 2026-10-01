@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LLM Viability Benchmark — Documentación</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --text: #0d0d0d;
+    --sidebar-bg: #1b2a3b;
+    --sidebar-text: #c9d4e0;
+    --sidebar-active: #ffffff;
+    --sidebar-hover: #2c3e52;
+    --accent: #0C4B33;
+    --accent-light: #e8f5ee;
+    --border: #e0e0e0;
+    --code-bg: #f5f5f5;
+    --muted: #666666;
+    --sidebar-width: 260px;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  *, *::before, *::after { box-sizing: inherit; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text);
+    background: var(--bg);
+    display: flex;
+    min-height: 100%;
+  }
+
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); height: 100%; }
+
+  /* SIDEBAR */
+  nav {
+    width: var(--sidebar-width);
+    min-width: var(--sidebar-width);
+    background: var(--sidebar-bg);
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+    padding: 32px 0 40px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .nav-logo {
+    padding: 0 24px 28px;
+    border-bottom: 1px solid #2c3e52;
+    margin-bottom: 20px;
+  }
+
+  .nav-logo span {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: #5f7a96;
+    margin-bottom: 4px;
+  }
+
+  .nav-logo strong {
+    color: var(--sidebar-active);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .nav-section {
+    padding: 8px 24px 4px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: #5f7a96;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-top: 12px;
+  }
+
+  nav a {
+    display: block;
+    padding: 6px 24px;
+    color: var(--sidebar-text);
+    text-decoration: none;
+    font-size: 13.5px;
+    border-left: 3px solid transparent;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  nav a:hover {
+    background: var(--sidebar-hover);
+    color: var(--sidebar-active);
+  }
+
+  nav a.active {
+    color: var(--sidebar-active);
+    border-left-color: #0C4B33;
+    background: var(--sidebar-hover);
+  }
+
+  /* CONTENT */
+  main {
+    flex: 1;
+    padding: 48px 64px 80px;
+    max-width: 860px;
+  }
+
+  section {
+    display: none;
+    animation: fadein 0.15s ease;
+  }
+
+  section.active { display: block; }
+
+  @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+
+  .lead {
+    font-size: 16px;
+    color: var(--muted);
+    margin-bottom: 36px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 24px;
+  }
+
+  h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 36px 0 12px;
+    color: var(--accent);
+  }
+
+  h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 24px 0 8px;
+  }
+
+  p { margin-bottom: 14px; max-width: 72ch; }
+
+  ul, ol {
+    padding-left: 20px;
+    margin-bottom: 14px;
+    max-width: 72ch;
+  }
+
+  li { margin-bottom: 6px; }
+
+  code {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-size: 13px;
+    font-family: 'Courier New', monospace;
+  }
+
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px;
+    overflow-x: auto;
+    margin: 16px 0 20px;
+    font-size: 13px;
+    font-family: 'Courier New', monospace;
+    line-height: 1.6;
+    max-width: 100%;
+  }
+
+  .callout {
+    background: var(--accent-light);
+    border-left: 4px solid var(--accent);
+    padding: 14px 18px;
+    border-radius: 0 4px 4px 0;
+    margin: 20px 0;
+    max-width: 72ch;
+  }
+
+  .callout.warning {
+    background: #fff8e1;
+    border-left-color: #f59e0b;
+  }
+
+  .callout p { margin: 0; font-size: 14px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 13.5px;
+  }
+
+  th {
+    background: var(--sidebar-bg);
+    color: var(--sidebar-active);
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 500;
+  }
+
+  td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  tr:hover td { background: #f9f9f9; }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+  }
+
+  .badge-green { background: #e8f5ee; color: #0C4B33; }
+  .badge-red { background: #fde8e8; color: #b91c1c; }
+  .badge-yellow { background: #fff8e1; color: #92400e; }
+
+  @media (max-width: 768px) {
+    body { flex-direction: column; }
+    nav { width: 100%; height: auto; position: relative; padding: 16px 0; }
+    main { padding: 24px 20px 60px; }
+    nav a { padding: 8px 16px; }
+    .nav-logo { padding: 0 16px 16px; }
+    .nav-section { padding: 8px 16px 4px; }
+  }
+</style>
+</head>
+<body>
+
+<nav id="sidebar">
+  <div class="nav-logo">
+    <strong>LLM Viability Benchmark</strong>
+    <a href="https://github.com/mikel-btw/benchmarks-llm-viability" target="_blank" style="display:inline-flex;align-items:center;gap:6px;margin-top:12px;padding:6px 12px;background:#2c3e52;color:#c9d4e0;border-radius:4px;font-size:12px;text-decoration:none;font-weight:500;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      GitHub
+    </a>
+  </div>
+
+  <span class="nav-section">Introducción</span>
+  <a href="#" onclick="show('overview')" class="active">¿Qué es este proyecto?</a>
+  <a href="#" onclick="show('goal')">Objetivo de investigación</a>
+
+  <span class="nav-section">Sistema</span>
+  <a href="#" onclick="show('structure')">Estructura del proyecto</a>
+  <a href="#" onclick="show('flow')">Cómo funciona</a>
+  <a href="#" onclick="show('stack')">Stack tecnológico</a>
+
+  <span class="nav-section">Benchmarks</span>
+  <a href="#" onclick="show('benchmarks')">Categorías de evaluación</a>
+  <a href="#" onclick="show('metrics')">Métricas recolectadas</a>
+
+  <span class="nav-section">Hardware y Modelos</span>
+  <a href="#" onclick="show('hardware')">Hardware utilizado</a>
+  <a href="#" onclick="show('models')">Modelos evaluados</a>
+
+  <span class="nav-section">Instalación</span>
+  <a href="#" onclick="show('install')">Instalación del sistema</a>
+
+  <span class="nav-section">Limitaciones</span>
+  <a href="#" onclick="show('limitations')">Limitaciones conocidas</a>
+</nav>
+
+<main>
+
+  <!-- OVERVIEW -->
+  <section id="overview" class="active">
+    <h1>LLM Viability Benchmark</h1>
+    <p class="lead">Sistema de benchmarking empírico para evaluar la viabilidad de ejecutar modelos de lenguaje de gran escala (LLMs) localmente en hardware modesto.</p>
+
+    <h2>¿Qué es este proyecto?</h2>
+    <p>Este proyecto es un sistema de evaluación automática y manual de LLMs ejecutados localmente a través de Ollama. Fue desarrollado como base experimental de un artículo de investigación académica del CIAI (Centro de Inteligencia Artificial e Innovación, Colombia).</p>
+    <p>El sistema mide dos dimensiones para cada modelo y máquina evaluados: la velocidad de inferencia (qué tan rápido responde el modelo) y la calidad de sus respuestas (qué tan correcto e inteligente es lo que produce).</p>
+
+    <div class="callout">
+      <p>Un resultado pobre es tan válido como uno exitoso. Si un modelo es demasiado lento o no puede correr en una máquina modesta, eso es un hallazgo experimental, no un fracaso.</p>
+    </div>
+
+    <h2>Autor</h2>
+    <p>Miguel Ángel Osorio Orduz<br>
+    <a href="mailto:mangelosorio@uts.edu.co">mangelosorio@uts.edu.co</a><br>
+    Centro de Inteligencia Artificial e Innovación — CIAI, Colombia</p>
+  </section>
+
+  <!-- GOAL -->
+  <section id="goal">
+    <h1>Objetivo de investigación</h1>
+    <p class="lead">Determinar empíricamente si alguna combinación de modelo y hardware produce resultados suficientemente rápidos e inteligentes para ser utilizable en la práctica.</p>
+
+    <h2>Pregunta de investigación</h2>
+    <p>¿Cómo cambia la relación entre rendimiento inferencial y calidad de respuesta al ejecutar LLMs localmente en hardware modesto frente a hardware de laboratorio?</p>
+    <p>La pregunta definitiva se formulará después del análisis de los datos experimentales. El proyecto no parte de una hipótesis sobre el resultado esperado.</p>
+
+    <h2>Áreas de análisis</h2>
+    <ul>
+      <li>Velocidad de inferencia vs. calidad de respuesta</li>
+      <li>Conocimiento general y razonamiento</li>
+      <li>Razonamiento matemático</li>
+      <li>Coherencia y seguimiento de instrucciones</li>
+      <li>Comportamiento en hardware con recursos limitados</li>
+    </ul>
+  </section>
+
+  <!-- STRUCTURE -->
+  <section id="structure">
+    <h1>Estructura del proyecto</h1>
+    <p class="lead">El proyecto está organizado en paquetes Python modulares con separación clara entre configuración, lógica de inferencia, benchmarks y resultados.</p>
+
+    <pre>benchmarks-llm-viability/
+  pyproject.toml             Metadata y configuración pytest
+  requirements.txt           Dependencias
+  results/                   JSON de resultados (no versionados)
+
+  src/
+    benchmarkcli.py          Punto de entrada CLI
+
+    config/
+      hardware.py            4 identificadores de máquina
+      models.py              14 modelos por categoría de hardware
+
+    core/
+      metrics.py             Mide TTFT, tiempo total, tokens/s, RAM
+      scorer.py              Valida scores manuales (1.0/0.7/0.5/0.0)
+      recorder.py            Guarda resultados en JSON
+      runner.py              Menú CLI y bucle de ejecución
+
+    benchmarks/
+      deepeval_llm.py        Wrapper OllamaDeepEvalLLM para deepeval
+      mmlu.py                Benchmark MMLU
+      hellaswag.py           Benchmark HellaSwag
+      truthfulqa.py          Benchmark TruthfulQA
+      prompt_qualification.py  10 prompts en español, scoring manual
+
+    tests/
+      test_runner.py         Tests unitarios</pre>
+  </section>
+
+  <!-- FLOW -->
+  <section id="flow">
+    <h1>Cómo funciona</h1>
+    <p class="lead">El sistema es una aplicación de línea de comandos que guía al investigador a través de la selección de máquina, modelo y benchmark.</p>
+
+    <h2>Flujo de ejecución</h2>
+    <ol>
+      <li><strong>Verificación de Ollama.</strong> Al iniciar, el sistema llama a <code>ollama.list()</code>. Si el servidor no responde, imprime instrucciones para correr <code>ollama serve</code> y termina.</li>
+      <li><strong>Selección de hardware.</strong> El usuario elige cuál de las 4 máquinas está usando en esta sesión.</li>
+      <li><strong>Selección de modelo.</strong> Se listan los 14 modelos disponibles agrupados por tier. El usuario elige uno.</li>
+      <li><strong>Selección de benchmark.</strong> Se presenta el menú de categorías. El usuario elige qué evaluar.</li>
+      <li><strong>Ejecución y guardado.</strong> El benchmark corre, las métricas se miden y el resultado se guarda en <code>results/</code> como JSON.</li>
+    </ol>
+
+    <h2>Menú de benchmarks</h2>
+    <pre>[1] MMLU (DeepEval)
+[2] HellaSwag (DeepEval)
+[3] TruthfulQA (DeepEval)
+[4] Prompt Qualification (scoring manual)
+[5] Correr todos</pre>
+
+    <h2>Formato del resultado JSON</h2>
+    <pre>{
+  "hardware": "Dell Precision",
+  "model": "llama3.2:1b",
+  "benchmark": "MMLU",
+  "prompt": "...",
+  "response": "...",
+  "score": 1.0,
+  "ttft_seconds": 0.84,
+  "total_time_seconds": 4.21,
+  "tokens_per_second": 18.3,
+  "ram_used_mb": 3412,
+  "timestamp": "2025-09-07T14:32:00"
+}</pre>
+  </section>
+
+  <!-- STACK -->
+  <section id="stack">
+    <h1>Stack tecnológico</h1>
+    <p class="lead">Todo corre localmente. No se usa ninguna API externa ni clave de nube.</p>
+
+    <h2>Dependencias principales</h2>
+    <table>
+      <tr><th>Librería</th><th>Uso</th></tr>
+      <tr><td><code>ollama</code></td><td>Cliente Python para comunicarse con el servidor Ollama local</td></tr>
+      <tr><td><code>deepeval</code></td><td>Framework de benchmarking con datasets estandarizados (MMLU, HellaSwag, TruthfulQA)</td></tr>
+      <tr><td><code>psutil</code></td><td>Medición de uso de RAM durante la inferencia</td></tr>
+      <tr><td><code>pandas</code></td><td>Procesamiento de resultados</td></tr>
+      <tr><td><code>matplotlib</code></td><td>Generación de gráficas</td></tr>
+    </table>
+
+    <h2>Entorno de inferencia</h2>
+    <ul>
+      <li>Runtime principal: <strong>Ollama</strong></li>
+      <li>Runtime secundario para comparación: <strong>vLLM</strong></li>
+      <li>Interfaz visual: <strong>Open WebUI</strong> via Docker + Portainer</li>
+    </ul>
+
+    <h2>Integración con deepeval</h2>
+    <p>deepeval no soporta Ollama nativamente. Se implementó la clase <code>OllamaDeepEvalLLM</code> que hereda de <code>DeepEvalBaseLLM</code> y redirige las llamadas de deepeval al cliente local de Ollama. Esto permite usar los datasets estandarizados de deepeval sin ninguna API externa.</p>
+  </section>
+
+  <!-- BENCHMARKS -->
+  <section id="benchmarks">
+    <h1>Categorías de evaluación</h1>
+    <p class="lead">El sistema tiene dos tipos de benchmarks: automatizados via deepeval y manuales con scoring del investigador.</p>
+
+    <h2>Benchmarks automatizados (deepeval)</h2>
+
+    <h3>MMLU — Massive Multitask Language Understanding</h3>
+    <p>Evalúa conocimiento general en 57 categorías académicas y profesionales. Se corren 10 preguntas por subtarea. El scoring es automático.</p>
+
+    <h3>HellaSwag</h3>
+    <p>Evalúa razonamiento de sentido común y completación de oraciones. 10 preguntas por subtarea.</p>
+
+    <h3>TruthfulQA</h3>
+    <p>Evalúa precisión factual y resistencia a falsedades comunes. 10 preguntas por subtarea.</p>
+
+    <h2>Benchmark manual</h2>
+
+    <h3>Prompt Qualification</h3>
+    <p>10 prompts en español que evalúan seguimiento de instrucciones, resumen, razonamiento lógico, problemas matemáticos, conocimiento factual, seguimiento de roles, code-switching técnico inglés/español, manejo de preguntas ambiguas, respuesta estructurada y concisión.</p>
+    <p>El investigador revisa cada respuesta y asigna un score:</p>
+    <table>
+      <tr><th>Score</th><th>Significado</th></tr>
+      <tr><td><code>1.0</code></td><td>Respuesta correcta</td></tr>
+      <tr><td><code>0.7</code></td><td>Parcialmente correcta</td></tr>
+      <tr><td><code>0.5</code></td><td>Mínimamente correcta</td></tr>
+      <tr><td><code>0.0</code></td><td>Incorrecta</td></tr>
+    </table>
+
+    <div class="callout warning">
+      <p><strong>Benchmarks no disponibles en producción:</strong> GSM8K y ARC Challenge fueron removidos del sistema. Ambos fallan por un bug interno de deepeval 4.2.3 que usa URIs incompletas de HuggingFace (<code>gsm8k</code> en lugar de <code>openai/gsm8k</code>, <code>ai2_arc</code> en lugar de <code>allenai/ai2_arc</code>). No existe versión compatible que corrija esto para Python 3.14 al momento del desarrollo.</p>
+    </div>
+  </section>
+
+  <!-- METRICS -->
+  <section id="metrics">
+    <h1>Métricas recolectadas</h1>
+    <p class="lead">Por cada experimento se registran métricas de velocidad, calidad y contexto de ejecución.</p>
+
+    <table>
+      <tr><th>Métrica</th><th>Descripción</th></tr>
+      <tr><td>Hardware</td><td>Identificador de la máquina usada</td></tr>
+      <tr><td>Sistema operativo</td><td>OS y versión</td></tr>
+      <tr><td>Modelo</td><td>Nombre y configuración del modelo</td></tr>
+      <tr><td>Benchmark</td><td>Categoría evaluada</td></tr>
+      <tr><td>Prompt</td><td>Texto exacto enviado al modelo</td></tr>
+      <tr><td>Respuesta</td><td>Salida completa del modelo</td></tr>
+      <tr><td>Score</td><td>Calidad de la respuesta (automático o manual)</td></tr>
+      <tr><td>TTFT</td><td>Time to First Token — latencia hasta la primera respuesta</td></tr>
+      <tr><td>Tiempo total</td><td>Segundos totales hasta respuesta completa</td></tr>
+      <tr><td>Tokens/segundo</td><td>Velocidad de inferencia medida</td></tr>
+      <tr><td>RAM usada (MB)</td><td>Memoria consumida durante la inferencia via psutil</td></tr>
+      <tr><td>Timestamp</td><td>Fecha y hora ISO de la ejecución</td></tr>
+    </table>
+  </section>
+
+  <!-- HARDWARE -->
+  <section id="hardware">
+    <h1>Hardware utilizado</h1>
+    <p class="lead">Cuatro máquinas divididas en dos categorías según su perfil de uso y capacidad.</p>
+
+    <h2>Hardware modesto (uso cotidiano)</h2>
+    <table>
+      <tr><th>Especificación</th><th>MacBook Pro 2012</th><th>Lenovo IdeaPad L340</th></tr>
+      <tr><td>Procesador</td><td>Intel Core i5-3250M</td><td>AMD Ryzen 3 3200U</td></tr>
+      <tr><td>RAM</td><td>16 GB DDR3L 1800 MHz</td><td>16 GB DDR4 3600 MHz</td></tr>
+      <tr><td>Almacenamiento</td><td>256 GB SSD SATA</td><td>256 GB M.2 NVMe + 2 TB HDD</td></tr>
+      <tr><td>Sistema Op.</td><td>Debian Linux</td><td>Void Linux</td></tr>
+    </table>
+
+    <h2>Hardware de laboratorio</h2>
+    <table>
+      <tr><th>Especificación</th><th>iMac 2017</th><th>Dell Precision</th></tr>
+      <tr><td>Procesador</td><td>Intel Xeon W 10N</td><td>Intel Core i9-14900K</td></tr>
+      <tr><td>RAM</td><td>32 GB DDR4</td><td>32 GB DDR5</td></tr>
+      <tr><td>GPU</td><td>Radeon Pro Vega 56 8 GB</td><td>NVIDIA RTX A2000</td></tr>
+      <tr><td>Almacenamiento</td><td>1 TB SSD NVMe</td><td>2 TB SSD NVMe</td></tr>
+      <tr><td>Sistema Op.</td><td>macOS Sequoia</td><td>Kubuntu</td></tr>
+    </table>
+  </section>
+
+  <!-- MODELS -->
+  <section id="models">
+    <h1>Modelos evaluados</h1>
+    <p class="lead">14 modelos divididos en dos tiers según los requerimientos de hardware.</p>
+
+    <h2>Hardware modesto</h2>
+    <table>
+      <tr><th>#</th><th>Modelo</th><th>Tamaño</th><th>Desarrollador</th></tr>
+      <tr><td>1</td><td><code>qwen2.5:0.5b</code></td><td>0.5B</td><td>Alibaba Cloud</td></tr>
+      <tr><td>2</td><td><code>qwen3.5:0.8b</code></td><td>0.8B</td><td>Alibaba Cloud</td></tr>
+      <tr><td>3</td><td><code>llama3.2:1b</code></td><td>1B</td><td>Meta AI</td></tr>
+      <tr><td>4</td><td><code>tinyllama:1.1b</code></td><td>1.1B</td><td>TinyLlama Project</td></tr>
+      <tr><td>5</td><td><code>deepseek-r1:1.5b</code></td><td>1.5B</td><td>DeepSeek AI</td></tr>
+      <tr><td>6</td><td><code>gemma2:2b</code></td><td>2B</td><td>Google DeepMind</td></tr>
+      <tr><td>7</td><td><code>llama3.2:3b</code></td><td>3B</td><td>Meta AI</td></tr>
+      <tr><td>8</td><td><code>qwen2.5:1.5b</code></td><td>1.5B</td><td>Alibaba Cloud</td></tr>
+      <tr><td>9</td><td><code>phi4-mini:3.8b</code> (Q4)</td><td>3.8B</td><td>Microsoft</td></tr>
+    </table>
+
+    <h2>Hardware de laboratorio</h2>
+    <table>
+      <tr><th>#</th><th>Modelo</th><th>Tamaño</th><th>Desarrollador</th></tr>
+      <tr><td>10</td><td><code>VIDRAFT/pocket-26b</code> (MoE, Q4)</td><td>26B</td><td>VIDRAFT / Google</td></tr>
+      <tr><td>11</td><td><code>ministral-3:8b</code></td><td>8B</td><td>Mistral AI</td></tr>
+      <tr><td>12</td><td><code>gemma3:12b</code></td><td>12B</td><td>Google DeepMind</td></tr>
+      <tr><td>13</td><td><code>deepseek-r1-distill-qwen:14b</code></td><td>14B</td><td>DeepSeek AI</td></tr>
+      <tr><td>14</td><td><code>qwen3:30b-a3b-q4_K_M</code> (MoE, Q4)</td><td>30B</td><td>Alibaba Cloud</td></tr>
+    </table>
+
+    <div class="callout">
+      <p>Los modelos del tier de laboratorio fallarán o serán inutilizables en el MacBook y el Lenovo por limitaciones de RAM. Estos casos se documentan como resultados experimentales válidos.</p>
+    </div>
+  </section>
+
+  <!-- INSTALL -->
+  <section id="install">
+    <h1>Instalación del sistema</h1>
+    <p class="lead">Guía para instalar Ollama, los modelos y el sistema de benchmarking en Linux y macOS.</p>
+
+    <h2>1. Instalar Ollama</h2>
+
+    <h3>Linux</h3>
+    <pre>curl -fsSL https://ollama.com/install.sh | sh</pre>
+
+    <h3>macOS</h3>
+    <p>Descarga el instalador desde <a href="https://ollama.com/download/mac" target="_blank">ollama.com/download/mac</a> o instala via Homebrew:</p>
+    <pre>brew install ollama</pre>
+
+    <p>Verifica que Ollama esté corriendo:</p>
+    <pre>ollama serve</pre>
+
+    <h2>2. Descargar los modelos</h2>
+
+    <div class="callout">
+      <p>Elige el comando según tu hardware. Si tu máquina tiene menos de 8 GB de RAM o es un equipo de uso cotidiano, usa los 9 modelos modestos. Si tienes hardware de laboratorio con 32 GB o más, descarga los 14 modelos.</p>
+    </div>
+
+    <h3>Hardware modesto — MacBook Pro 2012 / Lenovo IdeaPad L340 (9 modelos)</h3>
+    <pre>ollama pull qwen2.5:0.5b && \
+ollama pull qwen3.5:0.8b && \
+ollama pull llama3.2:1b && \
+ollama pull tinyllama:1.1b && \
+ollama pull deepseek-r1:1.5b && \
+ollama pull gemma2:2b && \
+ollama pull llama3.2:3b && \
+ollama pull qwen2.5:1.5b && \
+ollama pull phi4-mini:3.8b</pre>
+
+    <h3>Hardware de laboratorio — iMac 2017 / Dell Precision (todos los modelos)</h3>
+    <p>Primero descarga los 9 modelos modestos (comando de arriba), luego agrega los modelos de laboratorio:</p>
+    <pre>ollama pull VIDRAFT/pocket-26b && \
+ollama pull ministral-3:8b && \
+ollama pull gemma3:12b && \
+ollama pull deepseek-r1-distill-qwen:14b && \
+ollama pull qwen3:30b-a3b-q4_K_M</pre>
+
+    <h2>3. Clonar el repositorio</h2>
+    <pre>git clone https://github.com/mikel-btw/benchmarks-llm-viability.git
+cd benchmarks-llm-viability</pre>
+
+    <h2>4. Crear el entorno virtual e instalar dependencias</h2>
+
+    <h3>Linux</h3>
+    <pre>python3 -m venv venv
+source venv/bin/activate
+pip install -e .</pre>
+
+    <h3>macOS</h3>
+    <pre>python3 -m venv venv
+source venv/bin/activate
+pip install -e .</pre>
+
+    <h2>5. Ejecutar el sistema</h2>
+    <p>Asegúrate de que Ollama esté corriendo antes de iniciar:</p>
+    <pre>ollama serve</pre>
+    <p>En otra terminal, con el entorno virtual activado:</p>
+    <pre>python3 src/benchmarkcli.py</pre>
+
+    <h2>6. Correr los tests</h2>
+    <pre>pytest tests/</pre>
+  </section>
+
+  <!-- LIMITATIONS -->
+  <section id="limitations">
+    <h1>Limitaciones conocidas</h1>
+    <p class="lead">Limitaciones técnicas identificadas durante el desarrollo del sistema.</p>
+
+    <h2>GSM8K y ARC Challenge — removidos de producción</h2>
+    <div class="callout warning">
+      <p>Estos dos benchmarks no están disponibles en el sistema. deepeval 4.2.3 los referencia con URIs incompletas de HuggingFace: <code>gsm8k</code> en lugar de <code>openai/gsm8k</code> y <code>ai2_arc</code> en lugar de <code>allenai/ai2_arc</code>. No existe versión compatible con Python 3.14 que corrija este bug al momento del desarrollo.</p>
+    </div>
+
+    <h2>Requiere Ollama activo</h2>
+    <p>El sistema no puede iniciar ni reiniciar el daemon de Ollama. Si <code>ollama serve</code> no está corriendo antes de ejecutar el CLI, la aplicación termina con error.</p>
+
+    <h2>Primera ejecución requiere internet</h2>
+    <p>Los datasets de deepeval se descargan de HuggingFace en la primera ejecución y se cachean localmente. Las ejecuciones posteriores no requieren conexión.</p>
+
+    <h2>Scoring manual requiere presencia del investigador</h2>
+    <p>Prompt Qualification no puede automatizarse. El investigador debe revisar cada respuesta y asignar el score durante la ejecución.</p>
+
+    <h2>Modelos grandes en hardware modesto</h2>
+    <p>Los modelos del tier de laboratorio (pocket-26b, gemma3:12b, etc.) fallarán o experimentarán swap extremo en el MacBook Pro 2012 y el Lenovo IdeaPad L340. Estos casos se documentan como resultados experimentales válidos.</p>
+  </section>
+
+</main>
+
+<script>
+  function show(id) {
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+    return false;
+  }
+</script>
+
+</body>
+</html>
