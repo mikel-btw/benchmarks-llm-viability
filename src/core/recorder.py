@@ -3,7 +3,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import List, Dict, Any
 
-RESULTS_DIR = Path(__file__).resolve().parent.parent / "results"
+RESULTS_DIR = Path(__file__).resolve().parent.parent.parent / "results"
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
 class ResultRecorder:

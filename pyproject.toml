@@ -5,22 +5,26 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "benchmark-llm-viability"
 version = "0.1.0"
-description = "Empirical benchmarking of local LLMs across heterogeneous hardware"
+description = "Empirical benchmarking of local LLMs on modest computers"
 readme = "README.md"
 requires-python = ">=3.10"
 dynamic = ["dependencies"]
 
 [project.scripts]
-benchmark-llm = "main:main"
+benchmark-llm = "benchmarkcli:main"
+
+[tool.setuptools]
+py-modules = ["benchmarkcli"]
 
 [tool.setuptools.dynamic]
 dependencies = { file = "requirements.txt" }
 
 [tool.setuptools.packages.find]
-where = ["."]
+where = ["src"]
 include = ["benchmarks*", "core*", "config*"]
-exclude = ["tests*", "results*", "benchmark_llm_viability.egg-info*"]
+exclude = ["tests*", "benchmarks._disabled*"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
-testpaths = ["tests"]
+testpaths = ["src/tests"]
+pythonpath = ["src"]
