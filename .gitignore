@@ -1,7 +1,20 @@
+# Entornos virtuales
 venv/
 .venv/
+
+# Python
 __pycache__/
 *.pyc
 *.egg-info/
+.pytest_cache/
+
+# Resultados de ejecucion
 results/*.json
-benchmark_llm_viability.egg-info/
+
+# Secretos
+.env
+
+# Editores y sistema
+.vscode/
+.idea/
+.DS_Store
