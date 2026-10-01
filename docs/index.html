@@ -322,8 +322,10 @@
 
     <pre>benchmarks-llm-viability/
   pyproject.toml             Metadata y configuración pytest
-  requirements.txt           Dependencias
+  requirements.txt           Dependencias de ejecución
+  requirements-dev.txt       Dependencias de desarrollo (pytest)
   results/                   JSON de resultados (no versionados)
+  docs/                      Esta página de documentación
 
   src/
     benchmarkcli.py          Punto de entrada CLI
@@ -344,6 +346,7 @@
       hellaswag.py           Benchmark HellaSwag
       truthfulqa.py          Benchmark TruthfulQA
       prompt_qualification.py  10 prompts en español, scoring manual
+      _disabled/             GSM8K y ARC Challenge (deshabilitados)
 
     tests/
       test_runner.py         Tests unitarios</pre>
@@ -590,9 +593,12 @@ pip install -e .</pre>
     <pre>ollama serve</pre>
     <p>En otra terminal, con el entorno virtual activado:</p>
     <pre>python3 src/benchmarkcli.py</pre>
+    <p>También puedes usar el comando instalado por el paquete:</p>
+    <pre>benchmark-llm</pre>
 
     <h2>6. Correr los tests</h2>
-    <pre>pytest tests/</pre>
+    <pre>pip install -r requirements-dev.txt
+pytest</pre>
   </section>
 
   <!-- LIMITATIONS -->
