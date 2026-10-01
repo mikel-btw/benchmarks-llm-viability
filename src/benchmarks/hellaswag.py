@@ -6,7 +6,7 @@ class HellaSwagBenchmark:
 
     def run(self, model: str, hardware: str) -> dict:
         llm = OllamaDeepEvalLLM(model=model)
-        benchmark = HellaSwag(n_shots=0, n_problems=10)
+        benchmark = HellaSwag(n_shots=0, n_problems_per_task=10)
         
         benchmark.evaluate(model=llm)
         
